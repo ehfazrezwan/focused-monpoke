@@ -1,0 +1,17 @@
+{
+  "name": "monpoke",
+  "version": "1.0.0",
+  "description": "Turn based battle system",
+  "main": "src/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha tests/**/*_test.js"
+  },
+  "author": "Ehfaz Rezwan",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^8.2.0"
+  }
+}
