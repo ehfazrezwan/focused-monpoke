@@ -12,6 +12,12 @@
   "author": "Ehfaz Rezwan",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "^8.2.0"
+    "mocha": "^8.2.0",
+    "mock-stdin": "^1.0.0",
+    "test-console": "^1.1.0"
+  },
+  "dependencies": {
+    "lodash.toarray": "^4.4.0",
+    "prompt": "^1.0.0"
   }
 }
