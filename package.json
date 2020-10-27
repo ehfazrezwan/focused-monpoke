@@ -12,12 +12,12 @@
   "author": "Ehfaz Rezwan",
   "license": "MIT",
   "devDependencies": {
+    "chai": "^4.2.0",
     "mocha": "^8.2.0",
-    "mock-stdin": "^1.0.0",
-    "test-console": "^1.1.0"
+    "mock-stdin": "^1.0.0"
   },
   "dependencies": {
-    "lodash.toarray": "^4.4.0",
-    "prompt": "^1.0.0"
+    "chai-as-promised": "^7.1.1",
+    "prompt-async": "^0.9.9"
   }
 }
