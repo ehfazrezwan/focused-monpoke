@@ -52,6 +52,7 @@ describe("player enters commands", () => {
   describe("player runs CREATE command", () => {
     beforeEach(() => {
       Monpoke.teams = [];
+      Monpoke.currentTeam = [];
     });
 
     it("should create team with passed arguments - red team", () => {
@@ -205,6 +206,90 @@ describe("player enters commands", () => {
         Error,
         "Monpoke already assigned to team!"
       );
+    });
+
+    it("should initialize currentTeam object", () => {
+      const expected = [
+        {
+          name: "red",
+          monpoke: {},
+        },
+        {
+          name: "blue",
+          monpoke: {},
+        },
+      ];
+
+      Monpoke.createTeam("red", "pikachu", 10, 6);
+      Monpoke.createTeam("blue", "smorelax", 10, 6);
+
+      assert.deepEqual(Monpoke.currentTeam, expected);
+    });
+  });
+
+  describe("player runs ICHOOSEYOU command", () => {
+    beforeEach(() => {
+      Monpoke.teams = [];
+      Monpoke.currentTeam = [];
+    });
+
+    it("should throw error if total number of teams is not 2", () => {
+      assert.throws(
+        () => {
+          Monpoke.chooseMonpoke();
+        },
+        Error,
+        "Total number of teams has to be 2!"
+      );
+    });
+
+    it("should populate current team with chosen monpoke", () => {
+      const expected = {
+        name: "red",
+        monpoke: {
+          monpokeID: "reekachu",
+          hp: 7,
+          ap: 5,
+        },
+      };
+
+      Monpoke.createTeam("red", "reekachu", 7, 5);
+      Monpoke.createTeam("red", "bulbee", 7, 6);
+      Monpoke.createTeam("blue", "smorelax", 10, 3);
+
+      Monpoke.chooseMonpoke("red", "reekachu");
+
+      assert.deepNestedInclude(Monpoke.currentTeam, expected);
+    });
+
+    it("should populate current team with chosen monpoke for both teams", () => {
+      const expected = [
+        {
+          name: "red",
+          monpoke: {
+            monpokeID: "reekachu",
+            hp: 7,
+            ap: 5,
+          },
+        },
+        {
+          name: "blue",
+          monpoke: {
+            monpokeID: "smorelax",
+            hp: 10,
+            ap: 3,
+          },
+        },
+      ];
+
+      Monpoke.createTeam("red", "reekachu", 7, 5);
+      Monpoke.createTeam("red", "bulbee", 7, 6);
+      Monpoke.createTeam("blue", "smorelax", 10, 3);
+
+      Monpoke.chooseMonpoke("red", "reekachu");
+      Monpoke.chooseMonpoke("blue", "smorelax");
+
+      assert.deepNestedInclude(Monpoke.currentTeam, expected);
     });
   });
 });

@@ -4,6 +4,7 @@ const validateTeamCreationDataTypes = require("../utils/validator");
 const Monpoke = {};
 
 Monpoke.teams = [];
+Monpoke.currentTeam = [];
 
 // Welcome message to players
 Monpoke.welcome = () => {
@@ -38,7 +39,6 @@ Monpoke.sendCommand = async () => {
 
 Monpoke.createTeam = (teamName, monpokeID, hp, ap) => {
   if (validateTeamCreationDataTypes(teamName, monpokeID, hp, ap)) {
-    let foundSameMonpoke = false;
     const newMonpoke = {
       monpokeID: monpokeID,
       hp: hp,
@@ -51,6 +51,7 @@ Monpoke.createTeam = (teamName, monpokeID, hp, ap) => {
       team.name = teamName;
       team.monpoke = [newMonpoke];
       Monpoke.teams.push(team);
+      Monpoke.initCurrentTeam(teamName);
       return `${monpokeID} has been assigned to team ${teamName}`;
     } else if (Monpoke.teams.length < 2) {
       for (teamMember of Monpoke.teams) {
@@ -68,10 +69,27 @@ Monpoke.createTeam = (teamName, monpokeID, hp, ap) => {
       team.name = teamName;
       team.monpoke = [newMonpoke];
       Monpoke.teams.push(team);
-
+      Monpoke.initCurrentTeam(teamName);
       return `${monpokeID} has been assigned to team ${teamName}`;
     }
   }
+};
+
+Monpoke.initCurrentTeam = (teamName) => {
+  const team = {
+    name: teamName,
+    monpoke: {},
+  };
+
+  Monpoke.currentTeam.push(team);
+};
+
+Monpoke.chooseMonpoke = (teamName, monpokeID) => {
+  if (Monpoke.currentTeam.length < 2) {
+    throw new Error("Total number of teams has to be 2!");
+  }
+
+  Monpoke.currentTeam[0].monpoke = monpokeStats;
 };
 
 module.exports = Monpoke;
