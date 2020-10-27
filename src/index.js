@@ -16,6 +16,7 @@ Monpoke.welcome = () => {
 Monpoke.sendCommand = async () => {
   prompt.message = "";
   prompt.delimiter = "";
+  prompt.description = "";
 
   prompt.start();
 
@@ -37,22 +38,39 @@ Monpoke.sendCommand = async () => {
 
 Monpoke.createTeam = (teamName, monpokeID, hp, ap) => {
   if (validateTeamCreationDataTypes(teamName, monpokeID, hp, ap)) {
-    const team = {
-      name: teamName,
-      monpoke: [
-        {
-          monpokeID: monpokeID,
-          hp: hp,
-          ap: ap,
-        },
-      ],
+    let foundSameMonpoke = false;
+    const newMonpoke = {
+      monpokeID: monpokeID,
+      hp: hp,
+      ap: ap,
     };
 
-    if (Monpoke.teams.length < 2) {
-      Monpoke.teams.push(team);
-    }
+    const team = {};
 
-    return team;
+    if (!Monpoke.teams.length) {
+      team.name = teamName;
+      team.monpoke = [newMonpoke];
+      Monpoke.teams.push(team);
+      return `${monpokeID} has been assigned to team ${teamName}`;
+    } else if (Monpoke.teams.length < 2) {
+      for (teamMember of Monpoke.teams) {
+        if (teamMember.name === teamName) {
+          for (monpokeMember of teamMember.monpoke) {
+            if (monpokeMember.monpokeID === monpokeID) {
+              throw new Error("Monpoke already assigned to team!");
+            }
+          }
+          teamMember.monpoke.push(newMonpoke);
+          return `${monpokeID} has been assigned to team ${teamName}`;
+        }
+      }
+
+      team.name = teamName;
+      team.monpoke = [newMonpoke];
+      Monpoke.teams.push(team);
+
+      return `${monpokeID} has been assigned to team ${teamName}`;
+    }
   }
 };
 

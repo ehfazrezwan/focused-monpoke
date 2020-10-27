@@ -54,7 +54,7 @@ describe("player enters commands", () => {
       Monpoke.teams = [];
     });
 
-    it("should create team with passed arguments", () => {
+    it("should create team with passed arguments - red team", () => {
       const expected = {
         name: "red",
         monpoke: [
@@ -72,7 +72,7 @@ describe("player enters commands", () => {
       assert.deepNestedInclude(result, expected);
     });
 
-    it("should create team with passed arguments", () => {
+    it("should create team with passed arguments - blue team", () => {
       const expected = {
         name: "blue",
         monpoke: [
@@ -90,7 +90,7 @@ describe("player enters commands", () => {
       assert.deepNestedInclude(result, expected);
     });
 
-    it("should throw TypeError when passed invalid arguments", () => {
+    it("should throw TypeError when passed invalid arguments - 1st arg wrong", () => {
       assert.throws(
         () => {
           Monpoke.createTeam(5, "reekachu", 5, 6);
@@ -100,7 +100,7 @@ describe("player enters commands", () => {
       );
     });
 
-    it("should throw TypeError when passed invalid arguments", () => {
+    it("should throw TypeError when passed invalid arguments - 4th arg wrong", () => {
       assert.throws(
         () => {
           Monpoke.createTeam("red", "reekachu", 5, "HP of 6");
@@ -116,10 +116,95 @@ describe("player enters commands", () => {
       Monpoke.createTeam("red", "reekachu", 5, 2);
       Monpoke.createTeam("blue", "smorelax", 5, 3);
       Monpoke.createTeam("green", "watermillion", 5, 6);
+      Monpoke.createTeam("orange", "watermillion", 5, 6);
 
       const result = Monpoke.teams.length;
 
       assert.isAtMost(result, expectedNumTeams);
+    });
+
+    it("should add monpoke to team", () => {
+      const expected = {
+        name: "blue",
+        monpoke: [
+          {
+            monpokeID: "smorelax",
+            hp: 5,
+            ap: 2,
+          },
+          {
+            monpokeID: "reekachu",
+            hp: 3,
+            ap: 6,
+          },
+          {
+            monpokeID: "watermillion",
+            hp: 4,
+            ap: 7,
+          },
+        ],
+      };
+
+      Monpoke.createTeam("blue", "smorelax", 5, 2);
+      Monpoke.createTeam("blue", "reekachu", 3, 6);
+      Monpoke.createTeam("blue", "watermillion", 4, 7);
+
+      assert.deepNestedInclude(Monpoke.teams, expected);
+    });
+
+    it("should handle multiple teams and monpokes", () => {
+      const expectedTeam1 = {
+        name: "blue",
+        monpoke: [
+          {
+            monpokeID: "smorelax",
+            hp: 5,
+            ap: 2,
+          },
+          {
+            monpokeID: "reekachu",
+            hp: 3,
+            ap: 6,
+          },
+          {
+            monpokeID: "watermillion",
+            hp: 4,
+            ap: 7,
+          },
+        ],
+      };
+
+      const expectedTeam2 = {
+        name: "red",
+        monpoke: [
+          {
+            monpokeID: "reekachu",
+            hp: 3,
+            ap: 6,
+          },
+        ],
+      };
+
+      Monpoke.createTeam("blue", "smorelax", 5, 2);
+      Monpoke.createTeam("blue", "reekachu", 3, 6);
+      Monpoke.createTeam("blue", "watermillion", 4, 7);
+      Monpoke.createTeam("red", "reekachu", 3, 6);
+
+      assert.deepNestedInclude(Monpoke.teams, expectedTeam1);
+      assert.deepNestedInclude(Monpoke.teams, expectedTeam2);
+    });
+
+    it("should throw exception when assigning same monpoke to team", () => {
+      Monpoke.createTeam("night", "smorelax", 3, 6);
+      Monpoke.createTeam("night", "reekachu", 5, 6);
+
+      assert.throws(
+        () => {
+          Monpoke.createTeam("night", "reekachu", 5, 6);
+        },
+        Error,
+        "Monpoke already assigned to team!"
+      );
     });
   });
 });
