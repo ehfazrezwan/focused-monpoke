@@ -89,7 +89,27 @@ Monpoke.chooseMonpoke = (teamName, monpokeID) => {
     throw new Error("Total number of teams has to be 2!");
   }
 
-  Monpoke.currentTeam[0].monpoke = monpokeStats;
+  let monpokeStats, found = false;
+
+  for(team of Monpoke.teams) {
+    if(team.name === teamName) {
+      for(monpoke of team.monpoke) {
+        if(monpoke.monpokeID === monpokeID) {
+          monpokeStats = monpoke
+          found = true
+        }
+      }
+      if(!found) throw new Error('Monpoke does not exist on your team!')
+    }
+  }
+  
+  for(team of Monpoke.currentTeam) {
+    if(team.name === teamName) {
+      team.monpoke = monpokeStats
+    }
+  }
+
+  return Monpoke.currentTeam;
 };
 
 module.exports = Monpoke;

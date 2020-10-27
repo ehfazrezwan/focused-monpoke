@@ -225,6 +225,8 @@ describe("player enters commands", () => {
 
       assert.deepEqual(Monpoke.currentTeam, expected);
     });
+
+    it('should throw error ')
   });
 
   describe("player runs ICHOOSEYOU command", () => {
@@ -289,7 +291,18 @@ describe("player enters commands", () => {
       Monpoke.chooseMonpoke("red", "reekachu");
       Monpoke.chooseMonpoke("blue", "smorelax");
 
-      assert.deepNestedInclude(Monpoke.currentTeam, expected);
+      assert.deepStrictEqual(Monpoke.currentTeam, expected);
     });
+
+    it('should throw error when choosing non-existent monpoke', () => {
+      Monpoke.createTeam("red", "reekachu", 7, 5);
+      Monpoke.createTeam("red", "bulbee", 7, 6);
+      Monpoke.createTeam("blue", "smorelax", 10, 3);
+
+      assert.throws(() => {
+        Monpoke.chooseMonpoke("blue", "reekachu")
+      }, Error, 'Monpoke does not exist on your team!')
+    })
+
   });
 });
