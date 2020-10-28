@@ -36,12 +36,12 @@
   <h3 align="center">Monpoke - A Turn Based Battle System</h3>
 
   <p align="center">
-    A simple turn based battle system that has no affiliation with the very popular "Pokemon" series of video games, manga, anime etc. Interaction with the game is done through either standard input or file input, and output via standard output.
+    A simple turn based battle system that has no affiliation with the very popular "Pokemon" series of video games, manga, anime etc. Interaction with the game is done through either standard input or file input, and output via standard output. A web app has also been created alongside the CLI, please click on the link below
     <br />
     <a href="https://github.com/ehfazrezwan/focused-monpoke"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://focused-monpoke-siln.web.app/">View Demo</a>
+    <a href="https://monpoke-siliconinja.herokuapp.com/">View Demo</a>
     ·
     <a href="https://github.com/ehfazrezwan/focused-monpoke/issues">Report Bug</a>
     ·
@@ -90,7 +90,7 @@ git clone https://github.com/ehfazrezwan/focused-monpoke.git
 
 <!-- USAGE EXAMPLES -->
 
-## Usage
+## Usage (In CLI)
 
 1. cd into the cloned directory
 
@@ -98,16 +98,28 @@ git clone https://github.com/ehfazrezwan/focused-monpoke.git
 cd focused-monpoke
 ```
 
-2. Run tests using
+2. Install all dependencies
+
+```sh
+npm install
+```
+
+3. Run tests using
 
 ```sh
 npm test
 ```
 
-3. Run the actual program using
+4. Run the actual program using
 
 ```sh
-npm start
+node src/index.js
+```
+
+5. For file input, use
+
+```sh
+node src/index.js <path-to-file>
 ```
 
 <!-- ROADMAP -->
