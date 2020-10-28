@@ -9,6 +9,8 @@ Monpoke.started = false;
 Monpoke.playerTurn = 0;
 Monpoke.winner = -1;
 
+Monpoke.executor = "cli";
+
 // Welcome message to players
 Monpoke.welcome = () => {
   const welcomeMsg = `Welcome to Monpoke, a turn based battle system - where two teams face off against each other with their respective Monpoke! The games rules are as below: \n* The game consists of 2 teams, each team has a variable number of Monpoké. \n* Each Monpoké has 2 attributes, HitPoints (HP) and Attack Power (AP). \n* The 2 teams engage in a simple turn-based battle. \n* A team’s turn can be either choosing a Monpoké OR attacking with their currently \nchosen Monpoké. \n* Attacking Monpoké depletes the enemy Monpoké HP for the value of their AP. \n* A Monpoké is defeated when its HP is less than or equal to 0. \n* The game ends when all of a team’s Monpoké have been defeated. \nTo play the game, you have the following commands available to you: \n* CREATE <team-id> <monpoké-id> <hp> <attack> -> to create a team \n* ICHOOSEYOU <monpoké-id> -> to select current Monpoke \n* ATTACK -> attack opponent using your selected Monpoke \nGood luck!`;
@@ -48,6 +50,9 @@ Monpoke.commandHandler = (userCommand) => {
       return attackMonpoke;
     default:
       process.exitCode = 1;
+      if (Monpoke.executor === "executor") {
+        return "Error: SyntaxError";
+      }
       throw new SyntaxError();
   }
 };
@@ -74,16 +79,27 @@ Monpoke.sendCommand = async () => {
 // Function to create team
 Monpoke.createTeam = (teamName, monpokeID, hp, ap) => {
   if (Monpoke.started) {
+    if (Monpoke.executor === "server") {
+      return "Error: Cannot run CREATE team after game has started!";
+    }
     process.exitCode = 1;
     throw new Error("Cannot run CREATE team after game has started!");
   }
 
   if (hp < 1) {
+    if (Monpoke.executor === "server") {
+      return "Error: Monpoke must have HP of 1 or higher!";
+    }
+
     process.exitCode = 1;
     throw new RangeError("Monpoke must have HP of 1 or higher");
   }
 
   if (ap < 1) {
+    if (Monpoke.executor === "server") {
+      return "Error: Monpoke must have AP of 1 or higher!";
+    }
+
     process.exitCode = 1;
     throw new RangeError("Monpoke must have AP of 1 or higher");
   }
@@ -110,6 +126,9 @@ Monpoke.createTeam = (teamName, monpokeID, hp, ap) => {
         if (teamMember.name === teamName) {
           for (monpokeMember of teamMember.monpoke) {
             if (monpokeMember.monpokeID === monpokeID) {
+              if (Monpoke.executor === "server") {
+                return "Error: Monpoke already assigned to team!";
+              }
               process.exitCode = 1;
               throw new Error("Monpoke already assigned to team!");
             }
@@ -133,6 +152,10 @@ Monpoke.createTeam = (teamName, monpokeID, hp, ap) => {
         if (teamMember.name === teamName) {
           for (monpokeMember of teamMember.monpoke) {
             if (monpokeMember.monpokeID === monpokeID) {
+              if (Monpoke.executor === "server") {
+                return "Error: Monpoke already assigned to team!";
+              }
+
               process.exitCode = 1;
               throw new Error("Monpoke already assigned to team!");
             }
@@ -171,6 +194,10 @@ Monpoke.initCurrentTeam = (teamName) => {
 // Function to choose Monpoke
 Monpoke.chooseMonpoke = (monpokeID) => {
   if (Monpoke.currentTeam.length < 2) {
+    if (Monpoke.executor === "server") {
+      return "Error: Total number of teams has to be 2!";
+    }
+
     process.exitCode = 1;
     throw new Error("Total number of teams has to be 2!");
   }
@@ -187,6 +214,10 @@ Monpoke.chooseMonpoke = (monpokeID) => {
     }
   }
   if (!found) {
+    if (Monpoke.executor === "server") {
+      return "Error: Monpoke does not exist on your team!";
+    }
+
     process.exitCode = 1;
     throw new Error("Monpoke does not exist on your team!");
   }
@@ -211,6 +242,10 @@ Monpoke.chooseMonpoke = (monpokeID) => {
 // Function to attack monpoke
 Monpoke.attack = () => {
   if (!Monpoke.started) {
+    if (Monpoke.executor === "server") {
+      return "Error: You have to choose a Monpoke before attacking!";
+    }
+
     process.exitCode = 1;
     throw new Error("You have to choose a Monpoke before attacking!");
   }

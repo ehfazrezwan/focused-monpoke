@@ -2,7 +2,7 @@
   "name": "monpoke",
   "version": "1.0.0",
   "description": "Turn based battle system",
-  "main": "src/index.js",
+  "main": "server.js",
   "directories": {
     "test": "tests"
   },
@@ -19,6 +19,8 @@
     "test-console": "^1.1.0"
   },
   "dependencies": {
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
     "prompt-async": "^0.9.9"
   }
 }
