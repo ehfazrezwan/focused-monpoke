@@ -16,22 +16,18 @@ Monpoke.welcome = () => {
   return welcomeMsg;
 };
 
-// Function to allow user to send command to game
-Monpoke.sendCommand = async () => {
-  if (Monpoke.winner !== -1) {
-    process.exit(1);
-  }
+Monpoke.commandFromFile = (path) => {
+  const lineReader = require("readline").createInterface({
+    input: require("fs").createReadStream(path),
+  });
 
-  prompt.message = "";
-  prompt.delimiter = "";
-  prompt.description = "";
+  lineReader.on("line", function (line) {
+    const userCommand = line.split(" ");
+    Monpoke.commandHandler(userCommand);
+  });
+};
 
-  prompt.start();
-
-  const { COMMAND } = await prompt.get(["COMMAND"]);
-  // prompt.stop();
-  const userCommand = COMMAND.split(" ");
-
+Monpoke.commandHandler = (userCommand) => {
   switch (userCommand[0]) {
     case "CREATE":
       const createTeam = Monpoke.createTeam(
@@ -48,23 +44,47 @@ Monpoke.sendCommand = async () => {
       return chooseMonpoke;
     case "ATTACK":
       const attackMonpoke = Monpoke.attack();
-      // console.log(attackMonpoke);
+      console.log(attackMonpoke);
       return attackMonpoke;
     default:
+      process.exitCode = 1;
       throw new SyntaxError();
   }
 };
 
+// Function to allow user to send command to game
+Monpoke.sendCommand = async () => {
+  if (Monpoke.winner !== -1) {
+    process.exit(1);
+  }
+
+  prompt.message = "";
+  prompt.delimiter = "";
+  prompt.description = "";
+
+  prompt.start();
+
+  const { COMMAND } = await prompt.get(["COMMAND"]);
+  // prompt.stop();
+  const userCommand = COMMAND.split(" ");
+
+  return Monpoke.commandHandler(userCommand);
+};
+
+// Function to create team
 Monpoke.createTeam = (teamName, monpokeID, hp, ap) => {
   if (Monpoke.started) {
+    process.exitCode = 1;
     throw new Error("Cannot run CREATE team after game has started!");
   }
 
   if (hp < 1) {
+    process.exitCode = 1;
     throw new RangeError("Monpoke must have HP of 1 or higher");
   }
 
   if (ap < 1) {
+    process.exitCode = 1;
     throw new RangeError("Monpoke must have AP of 1 or higher");
   }
 
@@ -90,6 +110,7 @@ Monpoke.createTeam = (teamName, monpokeID, hp, ap) => {
         if (teamMember.name === teamName) {
           for (monpokeMember of teamMember.monpoke) {
             if (monpokeMember.monpokeID === monpokeID) {
+              process.exitCode = 1;
               throw new Error("Monpoke already assigned to team!");
             }
           }
@@ -112,6 +133,7 @@ Monpoke.createTeam = (teamName, monpokeID, hp, ap) => {
         if (teamMember.name === teamName) {
           for (monpokeMember of teamMember.monpoke) {
             if (monpokeMember.monpokeID === monpokeID) {
+              process.exitCode = 1;
               throw new Error("Monpoke already assigned to team!");
             }
           }
@@ -136,6 +158,7 @@ Monpoke.createTeam = (teamName, monpokeID, hp, ap) => {
   }
 };
 
+// Function to initialize current team object
 Monpoke.initCurrentTeam = (teamName) => {
   const team = {
     name: teamName,
@@ -145,8 +168,10 @@ Monpoke.initCurrentTeam = (teamName) => {
   Monpoke.currentTeam.push(team);
 };
 
+// Function to choose Monpoke
 Monpoke.chooseMonpoke = (monpokeID) => {
   if (Monpoke.currentTeam.length < 2) {
+    process.exitCode = 1;
     throw new Error("Total number of teams has to be 2!");
   }
 
@@ -161,7 +186,10 @@ Monpoke.chooseMonpoke = (monpokeID) => {
       found = true;
     }
   }
-  if (!found) throw new Error("Monpoke does not exist on your team!");
+  if (!found) {
+    process.exitCode = 1;
+    throw new Error("Monpoke does not exist on your team!");
+  }
 
   Monpoke.currentTeam[Monpoke.playerTurn].monpoke = monpokeStats;
 
@@ -180,8 +208,10 @@ Monpoke.chooseMonpoke = (monpokeID) => {
   return `${monpokeStats.monpokeID} has entered the battle!`;
 };
 
+// Function to attack monpoke
 Monpoke.attack = () => {
   if (!Monpoke.started) {
+    process.exitCode = 1;
     throw new Error("You have to choose a Monpoke before attacking!");
   }
 
@@ -227,6 +257,7 @@ Monpoke.attack = () => {
   return msg;
 };
 
+// Function to check if Monpoke are defeated
 const isDefeated = () => {
   let monpokeCount = [0, 0];
   let defeatedCount = [0, 0];
