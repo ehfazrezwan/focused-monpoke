@@ -18,6 +18,10 @@ Monpoke.welcome = () => {
 
 // Function to allow user to send command to game
 Monpoke.sendCommand = async () => {
+  if (Monpoke.winner !== -1) {
+    process.exit(1);
+  }
+
   prompt.message = "";
   prompt.delimiter = "";
   prompt.description = "";
@@ -25,16 +29,27 @@ Monpoke.sendCommand = async () => {
   prompt.start();
 
   const { COMMAND } = await prompt.get(["COMMAND"]);
-  prompt.stop();
+  // prompt.stop();
   const userCommand = COMMAND.split(" ");
 
   switch (userCommand[0]) {
     case "CREATE":
-      return "Team creation";
+      const createTeam = Monpoke.createTeam(
+        userCommand[1],
+        userCommand[2],
+        parseInt(userCommand[3]),
+        parseInt(userCommand[4])
+      );
+      console.log(createTeam);
+      return createTeam;
     case "ICHOOSEYOU":
-      return "Monpoke chosen";
+      const chooseMonpoke = Monpoke.chooseMonpoke(userCommand[1]);
+      console.log(chooseMonpoke);
+      return chooseMonpoke;
     case "ATTACK":
-      return "Attacking opponent";
+      const attackMonpoke = Monpoke.attack();
+      // console.log(attackMonpoke);
+      return attackMonpoke;
     default:
       throw new SyntaxError();
   }
@@ -170,13 +185,13 @@ Monpoke.attack = () => {
     throw new Error("You have to choose a Monpoke before attacking!");
   }
 
-  let msg;
+  let msg = "";
   const currentHP = Monpoke.currentTeam[Monpoke.playerTurn].monpoke.hp;
   const currentMonpoke =
     Monpoke.currentTeam[Monpoke.playerTurn].monpoke.monpokeID;
 
   if (currentHP < 1) {
-    msg = `${currentMonpoke} has been defeated! Please choose new Monpoke`;
+    msg += `${currentMonpoke} has been defeated! Please choose new Monpoke`;
     return msg;
   }
 
@@ -192,17 +207,17 @@ Monpoke.attack = () => {
     }
   }
   //   Monpoke.teams[opponentIndex].monpoke.hp -= attackerAP;
-
-  msg = `${currentMonpoke} attacked ${opponentMonpoke} for ${attackerAP} damage!`;
-
+  msg += `${currentMonpoke} attacked ${opponentMonpoke} for ${attackerAP} damage!`;
   if (Monpoke.currentTeam[opponentIndex].monpoke.hp < 1) {
-    msg = `${opponentMonpoke} has been defeated!`;
+    msg += `\n${opponentMonpoke} has been defeated!`;
   }
 
-  const defeated = Monpoke.isDefeated();
+  const defeated = isDefeated();
 
   if (defeated !== -1) {
-    msg = `${Monpoke.currentTeam[defeated === 0 ? 1 : 1].name} is the winner!`;
+    msg += `\n${
+      Monpoke.currentTeam[defeated === 0 ? 1 : 0].name
+    } is the winner!\n`;
     Monpoke.winner = defeated === 0 ? 1 : 1;
   }
 
@@ -212,7 +227,7 @@ Monpoke.attack = () => {
   return msg;
 };
 
-Monpoke.isDefeated = () => {
+const isDefeated = () => {
   let monpokeCount = [0, 0];
   let defeatedCount = [0, 0];
 

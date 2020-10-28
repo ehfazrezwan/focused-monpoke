@@ -28,7 +28,7 @@ describe("player starts the game", () => {
     });
 
     const result = await Monpoke.sendCommand();
-    assert.strictEqual(result, "Team creation");
+    assert.strictEqual(result, "pikachu has been assigned to team green");
   });
 });
 
@@ -430,7 +430,8 @@ describe("player enters commands", () => {
     });
 
     it("should defeat enemy Monpoke if HP is less than 1", () => {
-      const expected = "smorelax has been defeated!";
+      const expected =
+        "reekachu attacked smorelax for 5 damage!\nsmorelax has been defeated!";
 
       Monpoke.chooseMonpoke("reekachu");
       Monpoke.chooseMonpoke("smorelax");
@@ -457,7 +458,8 @@ describe("player enters commands", () => {
     });
 
     it("should declare winner when all Monpoke on team have 0 HP", () => {
-      const expected = "blue is the winner!";
+      const expected =
+        "graxxcutter attacked reekachu for 6 damage!\nreekachu has been defeated!\nblue is the winner!\n";
 
       Monpoke.chooseMonpoke("reekachu");
       Monpoke.chooseMonpoke("smorelax");
