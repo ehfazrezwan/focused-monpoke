@@ -92,4 +92,4 @@ app.post("/attack", (req, res) => {
   res.status(200).send(JSON.stringify(response));
 });
 
-server.listen(9000);
+server.listen(process.env.PORT || 9000);
